@@ -4,11 +4,11 @@ import io.cucumber.testng.CucumberOptions;
 import org.testng.annotations.DataProvider;
 
 @CucumberOptions(features = {"classpath:features"}, glue = {"stepDefinitions"},
-                tags = "@contact_us", monochrome = false, dryRun = false,
+                tags = "", monochrome = false, dryRun = false,
                 plugin = { "pretty", "html:target/cucumber.html", "json:target/cucumber.json" })
 public class MainRunner extends AbstractTestNGCucumberTests {
     @Override
-    @DataProvider(parallel = false)
+    @DataProvider(parallel = true)
     public Object[][] scenarios() {
         return super.scenarios();
     }
