@@ -24,7 +24,7 @@ public class DriverFactory {
 
     private static WebDriver createDriver() {
         WebDriver driver = null;
-        String browserType = "chrome";
+        String browserType = "";
 
         System.out.println(homeDir);
 
@@ -33,6 +33,9 @@ public class DriverFactory {
                 System.setProperty("webdriver.chrome.driver", homeDir + "/src/main/java/driver/drivers/chromedriver");
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
+                chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new ChromeDriver(chromeOptions);
                 break;
@@ -41,6 +44,9 @@ public class DriverFactory {
                 System.setProperty("webdriver.gecko.driver", homeDir + "/src/main/java/driver/drivers/geckodriver");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--remote-allow-origins=*");
+                firefoxOptions.addArguments("--headless");
+                firefoxOptions.addArguments("--no-sandbox");
+                firefoxOptions.addArguments("--disable-dev-shm-usage");
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
