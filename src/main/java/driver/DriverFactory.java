@@ -1,6 +1,5 @@
 package driver;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -25,39 +24,40 @@ public class DriverFactory {
 
     private static WebDriver createDriver() {
         WebDriver driver = null;
+        String browserType = "";
+
+        System.out.println(homeDir);
 
         switch (getBrowserType()) {
             case "chrome" -> {
-                WebDriverManager.chromedriver().setup();
+                System.setProperty("webdriver.chrome.driver", homeDir + "/src/main/java/driver/drivers/chromedriver");
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
-                // Temporarily remove headless mode
-                // chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new ChromeDriver(chromeOptions);
+                break;
             }
             case "firefox" -> {
-                WebDriverManager.firefoxdriver().setup();
+                System.setProperty("webdriver.gecko.driver", homeDir + "/src/main/java/driver/drivers/geckodriver");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--remote-allow-origins=*");
-                // Temporarily remove headless mode
-                // firefoxOptions.addArguments("--headless");
+                firefoxOptions.addArguments("--headless");
                 firefoxOptions.addArguments("--no-sandbox");
                 firefoxOptions.addArguments("--disable-dev-shm-usage");
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new FirefoxDriver(firefoxOptions);
+                break;
             }
         }
-        if (driver != null) {
-            driver.manage().window().maximize();
-        }
+        driver.manage().window().maximize();
         return driver;
     }
 
     private static String getBrowserType() {
-        String browserType = null;
+        String browserType =  null;
         try {
             Properties properties = new Properties();
             FileInputStream fileInputStream = new FileInputStream(homeDir + "/src/main/java/properties/config.properties");
@@ -66,13 +66,11 @@ public class DriverFactory {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        return browserType;
+       return browserType;
     }
 
     public static void cleanUpDriver() {
-        if (webDriver.get() != null) {
-            webDriver.get().quit();
-            webDriver.remove();
-        }
+        webDriver.get().quit();
+        webDriver.remove();
     }
 }
