@@ -28,11 +28,11 @@ public class DriverFactory {
 
         switch (getBrowserType()) {
             case "chrome" -> {
-                // Use WebDriverManager to automatically download the correct version of ChromeDriver
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
-                chromeOptions.addArguments("--headless");
+                // Temporarily remove headless mode
+                // chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
@@ -42,14 +42,17 @@ public class DriverFactory {
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--remote-allow-origins=*");
-                firefoxOptions.addArguments("--headless");
+                // Temporarily remove headless mode
+                // firefoxOptions.addArguments("--headless");
                 firefoxOptions.addArguments("--no-sandbox");
                 firefoxOptions.addArguments("--disable-dev-shm-usage");
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new FirefoxDriver(firefoxOptions);
             }
         }
-        driver.manage().window().maximize();
+        if (driver != null) {
+            driver.manage().window().maximize();
+        }
         return driver;
     }
 
