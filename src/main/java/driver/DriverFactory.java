@@ -1,5 +1,6 @@
 package driver;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +31,7 @@ public class DriverFactory {
 
         switch (getBrowserType()) {
             case "chrome" -> {
-                System.setProperty("webdriver.chrome.driver", homeDir + "/src/main/java/driver/drivers/chromedriver");
+                WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
                 chromeOptions.addArguments("--headless");
@@ -41,7 +42,7 @@ public class DriverFactory {
                 break;
             }
             case "firefox" -> {
-                System.setProperty("webdriver.gecko.driver", homeDir + "/src/main/java/driver/drivers/geckodriver");
+                WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--remote-allow-origins=*");
                 firefoxOptions.addArguments("--headless");
@@ -50,6 +51,9 @@ public class DriverFactory {
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
+            }
+            default -> {
+                throw new IllegalArgumentException("Browser type not supported: " + browserType);
             }
         }
         driver.manage().window().maximize();
