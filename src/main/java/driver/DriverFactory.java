@@ -40,6 +40,8 @@ public class DriverFactory {
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+                chromeOptions.addArguments("--disable-gpu"); // Disable GPU hardware acceleration
+                chromeOptions.addArguments("--window-size=1920,1080");
                 driver = new ChromeDriver(chromeOptions);
                 break;
             }
