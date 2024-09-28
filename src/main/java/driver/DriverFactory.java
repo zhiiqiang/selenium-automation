@@ -17,6 +17,7 @@ public class DriverFactory {
     private static String homeDir = System.getProperty("user.dir");
 
     public static WebDriver getDriver() {
+        // Initialize WebDriver only if it's not already set
         if (webDriver.get() == null) {
             webDriver.set(createDriver());
         }
@@ -25,16 +26,17 @@ public class DriverFactory {
 
     private static WebDriver createDriver() {
         WebDriver driver = null;
-        String browserType = "";
+        String browserType = getBrowserType(); // Getting the browser type
 
-        System.out.println(homeDir);
+        // Log the current directory for debugging purposes
+        System.out.println("Home Directory: " + homeDir);
 
-        switch (getBrowserType()) {
+        switch (browserType) {
             case "chrome" -> {
-                WebDriverManager.chromedriver().setup();
+                WebDriverManager.chromedriver().setup(); // Automatically set up ChromeDriver
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
-                chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--headless"); // Run Chrome in headless mode
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
@@ -42,10 +44,10 @@ public class DriverFactory {
                 break;
             }
             case "firefox" -> {
-                WebDriverManager.firefoxdriver().setup();
+                WebDriverManager.firefoxdriver().setup(); // Automatically set up FirefoxDriver
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--remote-allow-origins=*");
-                firefoxOptions.addArguments("--headless");
+                firefoxOptions.addArguments("--headless"); // Run Firefox in headless mode
                 firefoxOptions.addArguments("--no-sandbox");
                 firefoxOptions.addArguments("--disable-dev-shm-usage");
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
@@ -56,25 +58,26 @@ public class DriverFactory {
                 throw new IllegalArgumentException("Browser type not supported: " + browserType);
             }
         }
-        driver.manage().window().maximize();
+        driver.manage().window().maximize(); // Maximize the window, may not affect headless
         return driver;
     }
 
     private static String getBrowserType() {
-        String browserType =  null;
-        try {
+        String browserType = null;
+        try (FileInputStream fileInputStream = new FileInputStream(homeDir + "/src/main/java/properties/config.properties")) {
             Properties properties = new Properties();
-            FileInputStream fileInputStream = new FileInputStream(homeDir + "/src/main/java/properties/config.properties");
             properties.load(fileInputStream);
-            browserType = properties.getProperty("browser").toLowerCase();
+            browserType = properties.getProperty("browser", "chrome").toLowerCase(); // Default to chrome if not specified
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println("Error reading properties file: " + ex.getMessage());
         }
-       return browserType;
+        return browserType;
     }
 
     public static void cleanUpDriver() {
-        webDriver.get().quit();
-        webDriver.remove();
+        if (webDriver.get() != null) {
+            webDriver.get().quit();
+            webDriver.remove();
+        }
     }
 }
